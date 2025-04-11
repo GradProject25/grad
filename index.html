@@ -80,5 +80,54 @@
             });
         }
     </script>
+    <script>
+        function calculateCarbonFootprint() {
+            let electricity = parseFloat(document.getElementById("electricity").value) || 0;
+            let gasoline = parseFloat(document.getElementById("gasoline").value) || 0;
+    
+            let carbonFromElectricity = electricity * 0.5;
+            let carbonFromGasoline = gasoline * 2.3;
+            let totalCarbon = carbonFromElectricity + carbonFromGasoline;
+    
+            // عرض قيمة البصمة
+            document.getElementById("result").innerText = "بصمتك الكربونية: " + totalCarbon.toFixed(2) + " كجم CO2";
+    
+            // الرسالة التفاعلية حسب القيمة
+            let message = "";
+            if (totalCarbon > 250) {
+                message = " استهلاكك عالي ويساهم بشكل سلبي في تلوث البيئة حاول التقليل من استهلاك الطاقة⚠️";
+            } else {
+                message = "رائع استهلاك منخفض ويساهم في الحفاظ على البيئة🌱";
+            }
+    
+            // إذا ما كان فيه عنصر للرسالة، ننشئه
+            let feedback = document.getElementById("feedback");
+            if (!feedback) {
+                feedback = document.createElement("p");
+                feedback.id = "feedback";
+                feedback.style.fontWeight = "bold";
+                document.querySelector(".container").appendChild(feedback);
+            }
+    
+            feedback.innerText = message;
+    
+            // عرض الرسم البياني
+            let ctx = document.getElementById("carbonChart").getContext("2d");
+    
+            // تدمير الرسم السابق (إن وجد) قبل رسم جديد
+            if (window.myChart) window.myChart.destroy();
+    
+            window.myChart = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: ["كهرباء", "بنزين"],
+                    datasets: [{
+                        data: [carbonFromElectricity, carbonFromGasoline],
+                        backgroundColor: ["#FFA500", "#FF4500"]
+                    }]
+                }
+            });
+        }
+    </script>
 </body>
 </html>
